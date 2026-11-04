@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="nl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Lead Engine — Verander je bestaande website in een Offertemachine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .step-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+    }
+    .ai-pulse { animation: pulse-ring 2s infinite; }
+
+    /* Vriendelijke range slider styling met kleur */
+    input[type=range].calc-range {
+        -webkit-appearance: none;
+        width: 100%;
+        background: transparent;
+    }
+    input[type=range].calc-range:focus { outline: none; }
+    input[type=range].calc-range::-webkit-slider-runnable-track {
+        width: 100%; height: 6px; cursor: pointer; background: #e2e8f0; border-radius: 9999px;
+    }
+    input[type=range].calc-range::-webkit-slider-thumb {
+        height: 20px; width: 20px; border-radius: 50%; background: #4f46e5; cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3); transition: transform 0.15s ease;
+    }
+    input[type=range].calc-range::-webkit-slider-thumb:hover { transform: scale(1.1); }
+    .value-transition { transition: all 0.2s ease-in-out; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased">
+
+  <!-- NAVIGATIEBALK -->
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center">⚡</span>
+        <span class="font-extrabold text-lg tracking-tight">AI Lead<span class="text-indigo-600">Engine</span></span>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+        <a href="#live-demo" class="hover:text-indigo-600 transition font-medium">Probeer Demo</a>
+        <a href="#alle-functies" class="hover:text-indigo-600 transition">Alle 8 Functies</a>
+        <a href="#roi-calculator" class="hover:text-indigo-600 transition font-bold text-indigo-600">Bereken je Winst</a>
+        <a href="#pakketten" class="hover:text-indigo-600 transition">Pakketten</a>
+      </nav>
+      <a href="#pakketten" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition shadow-sm">
+        Binnen 48u Live →
+      </a>
+    </div>
+  </header>
+
+  <!-- HERO SECTIE -->
+  <section class="relative bg-slate-900 text-white pt-16 pb-20 overflow-hidden">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+      <div class="max-w-3xl mx-auto text-center">
+        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 mb-6">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          Geen nieuwe website nodig • Werkt op elke bestaande site
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+          Maak van je huidige website een <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-emerald-400">automatische AI-Offertemachine</span>
+        </h1>
+        <p class="mt-6 text-lg text-slate-300 leading-relaxed">
+          Probeer hieronder direct de live widget uit zoals jouw klanten die straks op jouw website zien. Bereken een prijs, test de foto-upload en zie hoe de AI binnen enkele seconden reageert.
+        </p>
+        <div class="mt-8">
+          <a href="#live-demo" class="inline-flex items-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition text-base">
+            <span>Test de Live Widget Hieronder</span>
+            <svg class="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== LIVE DEMO WIDGET SECTIE ==================== -->
+  <section id="live-demo" class="py-16 max-w-3xl mx-auto px-4 sm:px-6 -mt-10 relative z-20">
+    <div class="w-full bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+      
+      <!-- TOP HEADER MET LIVE PRIJSINDICATIE -->
+      <div class="bg-slate-900 text-white p-6 relative overflow-hidden">
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-indigo-600/20 rounded-full blur-2xl pointer-events-none"></div>
+        
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 mb-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              Live Pro Demo (Inclusief OTP & Foto-Upload)
+            </span>
+            <h2 class="text-xl font-bold tracking-tight">Bereken jouw investering in 60 sec.</h2>
+          </div>
+
+          <!-- Dynamische Prijs Badge -->
+          <div class="bg-slate-800/90 border border-slate-700 rounded-xl px-4 py-2.5 text-right shrink-0">
+            <span class="block text-[11px] uppercase tracking-wider text-slate-400">Geschatte Indicatie</span>
+            <span id="live-estimate" class="text-lg font-bold text-emerald-400">€ --</span>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mt-5">
+          <div class="flex justify-between text-xs text-slate-400 mb-1.5">
+            <span id="step-label">Stap 1 van 3: Wensen & Omvang</span>
+            <span id="step-percentage">33%</span>
+          </div>
+          <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+            <div id="progress-bar" class="bg-gradient-to-r from-indigo-500 to-emerald-400 h-full transition-all duration-500" style="width: 33%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORMULIER CONTAINER -->
+      <form id="lead-engine-form" class="p-6 md:p-8" novalidate>
+        
+        <!-- HONEYPOT SPAM VELD -->
+        <div class="hidden" aria-hidden="true">
+          <input type="text" id="company_website_hp" name="honeypot" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <!-- ==================== STAP 1: WENSEN & OMVANG ==================== -->
+        <div id="step-1" class="step-transition space-y-6">
+          <div>
+            <label class="block text-sm font-semibold text-slate-800 mb-3">
+              1. Waar kunnen we je mee helpen? *
+            </label>
+            <div id="service-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            <p id="error-step-1" class="hidden text-xs text-red-600 mt-2 font-medium">Selecteer een optie om verder te gaan.</p>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <label for="scope-slider" class="text-sm font-semibold text-slate-800">
+                2. Geschatte omvang / oppervlakte:
+              </label>
+              <span id="scope-value-display" class="text-sm font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg">
+                120 m² (Gemiddeld)
+              </span>
+            </div>
+            <input type="range" id="scope-slider" min="50" max="350" step="10" value="120" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600" />
+            <div class="flex justify-between text-xs text-slate-400 mt-1">
+              <span>Klein (50 m²)</span>
+              <span>Gemiddeld (150 m²)</span>
+              <span>Groot / Zakelijk (350+ m²)</span>
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <button type="button" onclick="nextStep(2)" class="w-full py-3.5 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/20 transition flex items-center justify-center gap-2">
+              <span>Volgende stap: Urgentie & Situatie</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ==================== STAP 2: URGENTIE & FOTO UPLOAD ==================== -->
+        <div id="step-2" class="hidden step-transition space-y-5">
+          <div>
+            <label class="block text-sm font-semibold text-slate-800 mb-2.5">
+              3. Wat is de gewenste uitvoertermijn? *
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5" id="urgency-options">
+              <button type="button" data-urgency="Spoed (Binnen 2-4 weken)" data-multiplier="1.1" class="urgency-btn border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-500 transition">
+                <span class="block text-xs font-bold text-amber-600">⚡ Spoed</span>
+                <span class="text-sm font-medium text-slate-800">Binnen 2-4 wkn</span>
+              </button>
+              <button type="button" data-urgency="Regulier (Binnen 1-3 maanden)" data-multiplier="1.0" class="urgency-btn border-2 border-indigo-600 bg-indigo-50/50 rounded-xl p-3 text-left transition">
+                <span class="block text-xs font-bold text-indigo-600">📅 Regulier</span>
+                <span class="text-sm font-medium text-slate-800">1 tot 3 maanden</span>
+              </button>
+              <button type="button" data-urgency="Oriënterend (> 3 maanden)" data-multiplier="1.0" class="urgency-btn border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-500 transition">
+                <span class="block text-xs font-bold text-slate-500">🔍 Oriënterend</span>
+                <span class="text-sm font-medium text-slate-800">Over 3+ maanden</span>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label for="project-files" class="block text-sm font-semibold text-slate-800 mb-1">
+              4. Upload foto's van de huidige situatie (Optioneel - Pro Feature)
+            </label>
+            <p class="text-xs text-slate-500 mb-2">Onze AI analyseert de foto's direct voor een nog scherpere offerte.</p>
+            <input type="file" id="project-files" multiple accept="image/*,.pdf" class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 border border-slate-200 rounded-xl p-2" />
+          </div>
+
+          <div>
+            <label for="extra-notes" class="block text-sm font-semibold text-slate-800 mb-1.5">
+              5. Specifieke wensen of bijzonderheden
+            </label>
+            <textarea id="extra-notes" rows="2" placeholder="Bijv. bereikbaarheid, specifieke merken..." class="w-full rounded-xl border border-slate-200 p-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-600"></textarea>
+          </div>
+
+          <div class="flex gap-3 pt-2">
+            <button type="button" onclick="prevStep(1)" class="px-5 py-3.5 border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium rounded-xl transition">Terug</button>
+            <button type="button" onclick="nextStep(3)" class="flex-1 py-3.5 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/20 transition flex items-center justify-center gap-2">
+              <span>Laatste stap: Gegevens invullen</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ==================== STAP 3: CONTACTGEGEVENS & OTP CHECK ==================== -->
+        <div id="step-3" class="hidden step-transition space-y-4">
+          <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 flex items-start gap-3">
+            <span class="text-emerald-600 text-lg mt-0.5">✨</span>
+            <div class="text-xs text-emerald-900 leading-relaxed">
+              <strong>Jouw berekening staat klaar!</strong> Vul je gegevens in. Na verzending sturen we ter verificatie een 4-cijferige code om je rapport direct te ontgrendelen.
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="lead-name" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Voor- en achternaam *</label>
+              <input type="text" id="lead-name" required placeholder="Jan de Vries" class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+            </div>
+            <div>
+              <label for="lead-location" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Postcode / Woonplaats *</label>
+              <input type="text" id="lead-location" required placeholder="3511 AB / Utrecht" class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="lead-email" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">E-mailadres *</label>
+              <input type="email" id="lead-email" required placeholder="jan@voorbeeld.nl" class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+            </div>
+            <div>
+              <label for="lead-phone" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Telefoonnummer (WhatsApp) *</label>
+              <input type="tel" id="lead-phone" required placeholder="06 12345678" class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+            </div>
+          </div>
+
+          <p id="error-step-3" class="hidden text-xs text-red-600 font-medium"></p>
+
+          <div class="flex gap-3 pt-3">
+            <button type="button" onclick="prevStep(2)" class="px-5 py-3.5 border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium rounded-xl transition">Terug</button>
+            <button type="submit" id="submit-btn" class="flex-1 py-4 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/25 transition flex items-center justify-center gap-2 text-base">
+              <span>Ontvang Direct Mijn AI-Offerte Op Maat</span>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ==================== STAP 4: OTP VERIFICATIE SCREEN ==================== -->
+        <div id="otp-screen" class="hidden py-6 text-center space-y-4">
+          <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center mx-auto text-xl font-bold">🔒</div>
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-3 py-1 rounded-full">E-mailverificatie (Pro Feature)</span>
+            <h3 class="text-xl font-bold text-slate-800 mt-2">Voer de 4-cijferige code in</h3>
+            <p class="text-sm text-slate-600 mt-1 max-w-sm mx-auto">
+              We hebben een code gestuurd naar <strong id="otp-target-email" class="text-slate-900"></strong>. *(Demo code: <span class="bg-amber-100 px-2 py-0.5 rounded font-mono text-amber-900 font-bold">4829</span>)*
+            </p>
+          </div>
+          <div class="max-w-xs mx-auto">
+            <input type="text" id="otp-code-input" maxlength="4" placeholder="4829" class="w-full text-center tracking-widest text-2xl font-mono rounded-xl border-2 border-indigo-500 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-100" />
+            <p id="error-otp" class="hidden text-xs text-red-600 font-medium mt-1">Onjuiste code. Probeer '4829'.</p>
+          </div>
+          <button type="button" onclick="verifyOtpCode()" class="w-full max-w-xs mx-auto py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md transition">
+            Verifieer & Ontgrendel Rapport
+          </button>
+        </div>
+
+        <!-- ==================== LOADING STATE ==================== -->
+        <div id="loading-screen" class="hidden py-12 text-center space-y-5">
+          <div class="w-16 h-16 rounded-2xl bg-indigo-600 text-white flex items-center justify-center mx-auto ai-pulse">
+            <svg class="w-8 h-8 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-slate-800">AI verwerkt gegevens & foto's...</h3>
+            <p class="text-sm text-slate-500 mt-1">Prijsberekening en advies opstellen...</p>
+          </div>
+        </div>
+
+        <!-- ==================== SUCCES SCHERM ==================== -->
+        <div id="success-screen" class="hidden py-6 text-center space-y-5">
+          <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+            <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">100% Geverifieerde Lead & Rapport Klaar</span>
+            <h3 class="text-2xl font-bold text-slate-800 mt-2">Jouw AI-Adviesrapport is verzonden!</h3>
+            <p class="text-sm text-slate-600 mt-1 max-w-md mx-auto">
+              We hebben je berekening verstuurd naar <strong id="confirm-email" class="text-slate-900"></strong>.
+            </p>
+          </div>
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-left space-y-2">
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-500">Gekozen traject:</span>
+              <span id="confirm-service" class="font-semibold text-slate-800"></span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-500">Geschatte prijsindicatie:</span>
+              <span id="confirm-price" class="font-bold text-emerald-600"></span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-500">Verwachte reactietijd:</span>
+              <span class="font-medium text-indigo-600">Binnen 2 uur (WhatsApp)</span>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </section>
+
+  <!-- ==================== ALLE 8 FUNCTIES (VOLLEDIG GRID) ==================== -->
+  <section id="alle-functies" class="py-16 bg-white border-y border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Alles-in-één Systeem</span>
+        <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 mt-3">Alle 8 krachtige functies onder de motorkap</h2>
+        <p class="text-slate-600 mt-2">Waar standaard formulier-tools $89+ per maand rekenen voor losse onderdelen, leveren wij één compleet ingerichte machine.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-indigo-500 transition">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold mb-4">1</div>
+          <h3 class="font-bold text-slate-900 text-base">AI Prijs- & Adviesrapport</h3>
+          <p class="text-xs text-indigo-600 font-semibold mt-0.5 mb-2">Direct in de mailbox</p>
+          <p class="text-sm text-slate-600">Berekent live een prijsrange en mailt binnen 60 seconden een deskundig rapport.</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-indigo-500 transition">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold mb-4">2</div>
+          <h3 class="font-bold text-slate-900 text-base">Lead-Herstel (Afhakers)</h3>
+          <p class="text-xs text-indigo-600 font-semibold mt-0.5 mb-2">Partial Submissions</p>
+          <p class="text-sm text-slate-600">Slaat elk veld op en stuurt twijfelaars automatisch een hervat-mail.</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-indigo-500 transition">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold mb-4">3</div>
+          <h3 class="font-bold text-slate-900 text-base">Afhaak-Inzichten</h3>
+          <p class="text-xs text-indigo-600 font-semibold mt-0.5 mb-2">Drop-off Insights</p>
+          <p class="text-sm text-slate-600">Zie exact bij welke vraag bezoekers afhaken om je conversie te optimaliseren.</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-indigo-500 transition">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold mb-4">4</div>
+          <h3 class="font-bold text-slate-900 text-base">E-mail & SMS Code Check</h3>
+          <p class="text-xs text-indigo-600 font-semibold mt-0.5 mb-2">100% Geverifieerde Leads</p>
+          <p class="text-sm text-slate-600">Bezoekers bevestigen hun aanvraag met een 4-cijferige code (OTP).</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-indigo-500 transition">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold mb-4">5</div>
+          <h3 class="font-bold text-slate-900 text-base">Onbeperkte Foto-Uploads</h3>
+          <p class="text-xs text-indigo-600 font-semibold mt-0.5 mb-2">AI Voor-Schouw</p>
+          <p class="text-sm text-slate-600">Klanten sturen foto's van hun situatie mee die de AI direct voor je analyseert.</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-indigo-500 transition">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold mb-4">6</div>
+          <h3 class="font-bold text-slate-900 text-base">Meta Pixel & GA4 Tracking</h3>
+          <p class="text-xs text-indigo-600 font-semibold mt-0.5 mb-2">Ad-Tracking & Waarde (€)</p>
+          <p class="text-sm text-slate-600">Stuurt zowel stappen als de berekende offertewaarde in euro's door naar advertenties.</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-indigo-500 transition">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold mb-4">7</div>
+          <h3 class="font-bold text-slate-900 text-base">2-Weg Database Sync</h3>
+          <p class="text-xs text-indigo-600 font-semibold mt-0.5 mb-2">Pre-fill links</p>
+          <p class="text-sm text-slate-600">Haalt live klantdata op uit je CRM zodat bestaande relaties niets opnieuw invullen.</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-indigo-500 transition">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold mb-4">8</div>
+          <h3 class="font-bold text-slate-900 text-base">Auto-AVG & 90d Historie</h3>
+          <p class="text-xs text-slate-600 font-semibold mt-0.5 mb-2">Privacy & Versiebeheer</p>
+          <p class="text-sm text-slate-600">Anonimiseert oude persoonsgegevens automatisch en bewaart 90 dagen prijshistorie.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== RUSTIGE INTERACTIEVE ROI CALCULATOR SECTIE (START OP 140, 1%, €40, MAX 1000) ==================== -->
+  <section id="roi-calculator" class="py-16 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="space-y-8">
+        
+        <!-- Header Sectie binnen de Calculator -->
+        <div class="text-center space-y-3 bg-white p-6 sm:p-10 rounded-3xl shadow-sm border border-slate-200/80 relative overflow-hidden">
+            <div class="absolute -top-12 -right-12 w-40 h-40 bg-blue-100 rounded-full blur-2xl pointer-events-none opacity-60"></div>
+            <div class="absolute -bottom-12 -left-12 w-40 h-40 bg-indigo-100 rounded-full blur-2xl pointer-events-none opacity-60"></div>
+
+            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200/70 tracking-wide uppercase">
+                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                </svg>
+                Interactieve Conversie Calculator
+            </span>
+            
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight max-w-3xl mx-auto leading-tight">
+                Rekenvoorbeeld: Hoeveel extra opbrengst haal jij uit bezoekers die de lead volledig gevolgd hebben?
+            </h2>
+            
+            <p class="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto font-normal">
+                Schuif of typ het aantal bezoekers (10 tot 1.000) en je orderwaarde per uur in en zie direct het resultaat.
+            </p>
+        </div>
+
+        <!-- Rekenmachine Hoofdraster -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            
+            <!-- Invoerkolom (Links) -->
+            <div class="lg:col-span-6 bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-6">
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                            </svg>
+                            Invoer Parameters
+                        </h3>
+                        <button id="resetBtn" class="text-xs text-slate-500 hover:text-blue-600 font-medium transition-colors flex items-center gap-1 cursor-pointer">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                            Herstel standaard (140, 1%, €40)
+                        </button>
+                    </div>
+
+                    <!-- Maandelijkse Bezoekers (10 tot 1000, start op 140) -->
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <label for="visitorsInput" class="text-sm font-bold text-slate-900 block">
+                                Bezoekers die lead volledig volgden
+                            </label>
+                            <div class="relative">
+                                <input 
+                                    type="number" 
+                                    id="visitorsInput" 
+                                    value="140" 
+                                    min="10" 
+                                    max="1000" 
+                                    step="10"
+                                    class="w-32 px-3 py-2 text-right font-black text-slate-900 bg-white border-2 border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg transition-all"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Range Slider Bezoekers -->
+                        <input 
+                            type="range" 
+                            id="visitorsSlider" 
+                            min="10" 
+                            max="1000" 
+                            value="140" 
+                            step="10"
+                            class="calc-range w-full"
+                        >
+
+                        <div class="flex justify-between text-xs text-slate-400 font-medium">
+                            <span>10</span>
+                            <span>500</span>
+                            <span>1.000 max</span>
+                        </div>
+                    </div>
+
+                    <!-- Gemiddelde Orderwaarde per uur (€) (Start op € 40) -->
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <label for="orderValueInput" class="text-sm font-bold text-slate-900 block">
+                                Orderwaarde per uur (€)
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 font-bold">€</span>
+                                <input 
+                                    type="number" 
+                                    id="orderValueInput" 
+                                    value="40" 
+                                    min="5" 
+                                    max="1000" 
+                                    step="5"
+                                    class="w-32 pl-8 pr-3 py-2 text-right font-black text-slate-900 bg-white border-2 border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg transition-all"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Range Slider Orderwaarde -->
+                        <input 
+                            type="range" 
+                            id="orderValueSlider" 
+                            min="5" 
+                            max="500" 
+                            value="40" 
+                            step="5"
+                            class="calc-range w-full"
+                        >
+
+                        <div class="flex justify-between text-xs text-slate-400 font-medium">
+                            <span>€ 5</span>
+                            <span>€ 250</span>
+                            <span>€ 500+</span>
+                        </div>
+                    </div>
+
+                    <!-- AI Conversie Uplift Selectie (Alleen 1%, 2%, 3%, 4%, start op 1%) -->
+                    <div class="space-y-3 pt-4 border-t border-slate-100">
+                        <div class="flex justify-between items-center">
+                            <label class="text-sm font-bold text-slate-900">
+                                Verwachte AI Conversiestijging
+                            </label>
+                            <span id="upliftBadge" class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                                +1.0% conversie
+                            </span>
+                        </div>
+                        
+                        <div class="grid grid-cols-4 gap-2">
+                            <button type="button" class="uplift-btn py-2 px-1 text-center rounded-xl border font-bold text-xs transition-all bg-blue-600 text-white border-blue-600 shadow-sm cursor-pointer" data-uplift="1.0">1%</button>
+                            <button type="button" class="uplift-btn py-2 px-1 text-center rounded-xl border font-bold text-xs transition-all bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 cursor-pointer" data-uplift="2.0">2%</button>
+                            <button type="button" class="uplift-btn py-2 px-1 text-center rounded-xl border font-bold text-xs transition-all bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 cursor-pointer" data-uplift="3.0">3%</button>
+                            <button type="button" class="uplift-btn py-2 px-1 text-center rounded-xl border font-bold text-xs transition-all bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 cursor-pointer" data-uplift="4.0">4%</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resultatenkolom (Rechts) -->
+            <div class="lg:col-span-6 bg-slate-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col justify-between border border-slate-800 relative overflow-hidden">
+                <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-blue-600/25 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -left-16 -top-16 w-64 h-64 bg-emerald-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10 space-y-6">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                        <div>
+                            <span class="text-xs font-bold text-blue-400 tracking-wider uppercase">Live Rekenresultaat</span>
+                            <h3 class="text-xl font-extrabold text-white">Geschatte Extra Omzet</h3>
+                        </div>
+                        <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            Direct Rendement
+                        </span>
+                    </div>
+
+                    <!-- Maandresultaat Card -->
+                    <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/15 hover:border-blue-400/50 transition-all group">
+                        <div class="flex justify-between items-center mb-1">
+                            <p class="text-xs font-bold text-slate-300 uppercase tracking-wider">Extra Omzet Per Maand</p>
+                            <svg class="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                            </svg>
+                        </div>
+                        <div class="text-3xl sm:text-5xl font-black text-emerald-400 tracking-tight my-2 value-transition" id="monthlyResult">
+                            € 0,00
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-slate-300 pt-2 border-t border-white/10">
+                            <span>Extra bestellingen / maand:</span>
+                            <strong class="text-white text-sm" id="monthlyOrdersCount">0 verkopen</strong>
+                        </div>
+                    </div>
+
+                    <!-- Jaarresultaat Card -->
+                    <div class="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 hover:border-blue-400/30 transition-all">
+                        <p class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Extra Omzet Per Jaar</p>
+                        <div class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight my-2 value-transition" id="yearlyResult">
+                            € 0,00
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-slate-400 pt-2 border-t border-white/10">
+                            <span>Totale jaarlijkse meerwaarde:</span>
+                            <strong class="text-slate-200" id="yearlyOrdersCount">0 verkopen / jaar</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Samenvattende Kopieerknop -->
+                <div class="relative z-10 mt-8 pt-6 border-t border-slate-800 space-y-4">
+                    <button id="copySummaryBtn" class="w-full py-3.5 px-4 rounded-xl font-bold text-xs text-slate-900 bg-gradient-to-r from-emerald-400 to-teal-300 hover:from-emerald-300 hover:to-teal-200 transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer">
+                        <svg class="w-4 h-4 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 001 2h2a2 2 0 001-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                        </svg>
+                        <span id="copyBtnText">Kopieer Rekenresultaat Samenvatting</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Disclaimer Box -->
+        <div class="bg-amber-50 border-l-4 border-amber-500 p-6 rounded-r-3xl shadow-sm text-amber-950 space-y-2">
+            <div class="flex items-center gap-2 font-bold text-amber-900 text-base">
+                <svg class="w-5 h-5 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <span>Belangrijke Disclaimer &amp; Voorwaarden</span>
+            </div>
+            <p class="text-xs text-amber-900/90 leading-relaxed">
+                <strong>Let op:</strong> Dit betreft een indicatief rekenvoorbeeld ter illustratie van de potentie van prijsduidelijke AI-conversie-optimalisatie.
+                De getoonde bedragen en conversiestijgingen zijn een schatting en <strong>worden expliciet niet gegarandeerd</strong>.
+            </p>
+        </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== PAKKETTEN & PRIJZEN ==================== -->
+  <section id="pakketten" class="py-16 max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900">Kies jouw AI Lead Engine Pakket</h2>
+      <p class="text-slate-600 mt-2">Volledig voor je ingericht, getraind op jouw prijzen en binnen 48 uur live op je bestaande website.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8 items-stretch max-w-4xl mx-auto">
+      
+      <!-- PAKKET 2: PRO & PERFORMANCE (€ 50) -->
+      <div class="bg-slate-900 text-white rounded-2xl border-2 border-indigo-500 p-7 flex flex-col justify-between shadow-2xl relative">
+        <div class="absolute -top-3.5 right-6 bg-emerald-500 text-slate-950 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+          Meest Gekozen
+        </div>
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-400">Compleet Pakket</span>
+          <h3 class="text-xl font-bold mt-1">Pro & Performance</h3>
+          <p class="text-xs text-slate-400 mt-1">Haalt afgehaakte bezoekers terug, blokkeert nep-leads en analyseert klantfoto's.</p>
+          <div class="my-6">
+            <span class="text-4xl font-extrabold text-white">€ 50</span>
+            <span class="text-sm text-slate-400">/ maand (excl. btw)</span>
+          </div>
+          <ul class="space-y-3 text-sm text-slate-200">
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> <span><strong>3-Stappen Prijs- & Adviescalculator</strong></span></li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> <span><strong>Lead-Recovery:</strong> mailt afhakers automatisch</span></li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> <span><strong>OTP-Verificatie:</strong> 100% echte leads via code</span></li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> <span><strong>Onbeperkte Foto-Uploads</strong> + AI Voor-Schouw</span></li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> <span><strong>2-Weg Sync & AVG</strong> auto-cleaner</span></li>
+          </ul>
+        </div>
+        <a href="#live-demo" class="mt-8 block w-full py-4 text-center rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold transition shadow-lg">
+          Kies Pro & Performance →
+        </a>
+      </div>
+
+      <!-- PAKKET 3: AGENCY & MAATWERK (€ 150 voor 4 websites / € 75 maatwerk) -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-7 flex flex-col justify-between shadow-sm">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Meerdere Sites / Bureaus</span>
+          <h3 class="text-xl font-bold text-slate-900 mt-1">Agency & Maatwerk</h3>
+          <p class="text-xs text-slate-500 mt-1">Voor bureaus, meervoudige websites of specifieke wensen.</p>
+          <div class="my-6">
+            <span class="text-3xl font-extrabold text-slate-900">€ 150</span>
+            <span class="text-xs text-slate-500">/ 4 websites</span>
+            <span class="block text-xs text-indigo-600 font-semibold mt-1">Maatwerk v.a. € 75</span>
+          </div>
+          <ul class="space-y-3 text-sm text-slate-700">
+            <li class="flex gap-2"><span>✅</span> <span><strong>Volledig White-Label</strong></span></li>
+            <li class="flex gap-2"><span>✅</span> <span>Directe koppeling met eigen CRM / ERP</span></li>
+            <li class="flex gap-2"><span>✅</span> <span>Geschikt voor 4 websites</span></li>
+            <li class="flex gap-2"><span>💬</span> <span><strong>Meer websites & aangepaste prijzen bespreekbaar</strong></span></li>
+          </ul>
+        </div>
+        <a href="#live-demo" class="mt-8 block w-full py-3.5 text-center rounded-xl border-2 border-slate-800 text-slate-800 font-bold hover:bg-slate-50 transition">
+          Vraag Agency Aan
+        </a>
+      </div>
+    </div>
+
+    <!-- EXTRA BLOCK: TELEFOONBOT -->
+    <div class="mt-8 bg-slate-900 text-white rounded-2xl p-6 sm:p-8 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6 max-w-4xl mx-auto">
+      <div class="space-y-2 text-center md:text-left">
+        <span class="px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-xs font-bold border border-indigo-500/30">Nieuwe Optie</span>
+        <h3 class="text-xl font-bold">Automatische Telefoonbeantwoording (Telefoon Bot)</h3>
+        <p class="text-sm text-slate-300 max-w-2xl">Laat binnenkomende telefoontjes direct en slim beantwoorden door een AI-telefoonbot die direct afspraken inplant of vragen afhandelt.</p>
+      </div>
+      <div class="text-center shrink-0">
+        <span class="block text-xs text-slate-400">Vanaf</span>
+        <span class="text-3xl font-extrabold text-emerald-400">€ 125</span>
+        <span class="text-xs text-slate-400">/ maand</span>
+        <a href="#live-demo" class="mt-3 block px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition">Meer Info →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- JAVASCRIPT ENGINE (WIDGET + CALCULATOR STARTEND OP 140 BEZOEKERS, 1% UPLIFT, €40 ORDERWAARDE) -->
+  <script>
+    const CONFIG = {
+      demoMode: true,
+      clientName: "KlimaTech Installaties B.V.",
+      services: [
+        { id: "warmtepomp", title: "Hybride / All-Electric Warmtepomp", icon: "🔥", basePrice: 3800, pricePerSqm: 12 },
+        { id: "airco", title: "Airco Systeem (Koelen & Verwarmen)", icon: "❄️", basePrice: 1650, pricePerSqm: 8 },
+        { id: "zonnepanelen", title: "Zonnepanelen + Thuisbatterij", icon: "☀️", basePrice: 4200, pricePerSqm: 15 },
+        { id: "onderhoud_advies", title: "Totaaladvies & Verduurzaming", icon: "📋", basePrice: 1200, pricePerSqm: 10 }
+      ]
+    };
+
+    let state = {
+      selectedService: CONFIG.services[0],
+      scopeSqm: 120,
+      urgency: "Regulier (Binnen 1-3 maanden)",
+      urgencyMultiplier: 1.0,
+      estimatedMin: 0,
+      estimatedMax: 0,
+      email: "",
+      name: ""
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderServiceOptions();
+      calculateEstimate();
+      setupEventListeners();
+      setupAdvancedCalculator();
+    });
+
+    function renderServiceOptions() {
+      const container = document.getElementById("service-options");
+      if(!container) return;
+      container.innerHTML = CONFIG.services.map((service, idx) => `
+        <button type="button" data-id="${service.id}" class="service-card text-left p-3.5 rounded-xl border-2 transition flex items-start gap-3 ${idx === 0 ? 'border-indigo-600 bg-indigo-50/50' : 'border-slate-200 hover:border-indigo-300'}">
+          <span class="text-2xl">${service.icon}</span>
+          <div>
+            <span class="block text-sm font-semibold text-slate-800 leading-snug">${service.title}</span>
+            <span class="text-xs text-slate-500">Vanaf € ${service.basePrice.toLocaleString('nl-NL')}</span>
+          </div>
+        </button>
+      `).join("");
+    }
+
+    function setupEventListeners() {
+      const serviceOpts = document.getElementById("service-options");
+      if(serviceOpts) {
+        serviceOpts.addEventListener("click", (e) => {
+          const card = e.target.closest(".service-card");
+          if (!card) return;
+          document.querySelectorAll(".service-card").forEach(c => {
+            c.classList.remove("border-indigo-600", "bg-indigo-50/50");
+            c.classList.add("border-slate-200");
+          });
+          card.classList.remove("border-slate-200");
+          card.classList.add("border-indigo-600", "bg-indigo-50/50");
+          state.selectedService = CONFIG.services.find(s => s.id === card.dataset.id);
+          calculateEstimate();
+        });
+      }
+
+      const slider = document.getElementById("scope-slider");
+      if(slider) {
+        slider.addEventListener("input", (e) => {
+          state.scopeSqm = parseInt(e.target.value, 10);
+          let label = "Gemiddeld";
+          if (state.scopeSqm < 90) label = "Compact";
+          if (state.scopeSqm > 180) label = "Groot / Ruim";
+          document.getElementById("scope-value-display").textContent = `${state.scopeSqm} m² (${label})`;
+          calculateEstimate();
+        });
+      }
+
+      document.querySelectorAll(".urgency-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".urgency-btn").forEach(b => {
+            b.classList.remove("border-2", "border-indigo-600", "bg-indigo-50/50");
+            b.classList.add("border", "border-slate-200");
+          });
+          btn.classList.remove("border", "border-slate-200");
+          btn.classList.add("border-2", "border-indigo-600", "bg-indigo-50/50");
+          state.urgency = btn.dataset.urgency;
+          state.urgencyMultiplier = parseFloat(btn.dataset.multiplier);
+          calculateEstimate();
+        });
+      });
+
+      const form = document.getElementById("lead-engine-form");
+      if(form) {
+        form.addEventListener("submit", handleFormSubmit);
+      }
+    }
+
+    function calculateEstimate() {
+      const raw = (state.selectedService.basePrice + (state.scopeSqm * state.selectedService.pricePerSqm)) * state.urgencyMultiplier;
+      state.estimatedMin = Math.round((raw * 0.92) / 50) * 50;
+      state.estimatedMax = Math.round((raw * 1.08) / 50) * 50;
+      const estEl = document.getElementById("live-estimate");
+      if(estEl) {
+        estEl.textContent = `€ ${state.estimatedMin.toLocaleString('nl-NL')} - € ${state.estimatedMax.toLocaleString('nl-NL')}`;
+      }
+    }
+
+    function nextStep(stepNumber) { updateStepUI(stepNumber); }
+    function prevStep(stepNumber) { updateStepUI(stepNumber); }
+
+    function updateStepUI(stepNumber) {
+      [1, 2, 3].forEach(s => {
+        const el = document.getElementById(`step-${s}`);
+        if (el) el.classList.toggle("hidden", s !== stepNumber);
+      });
+      const labels = {
+        1: "Stap 1 van 3: Wensen & Omvang",
+        2: "Stap 2 van 3: Urgentie & Foto Upload",
+        3: "Stap 3 van 3: Contactgegevens"
+      };
+      const pct = { 1: "33%", 2: "66%", 3: "100%" };
+      document.getElementById("step-label").textContent = labels[stepNumber];
+      document.getElementById("step-percentage").textContent = pct[stepNumber];
+      document.getElementById("progress-bar").style.width = pct[stepNumber];
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById("lead-name").value.trim();
+      const email = document.getElementById("lead-email").value.trim();
+      const phone = document.getElementById("lead-phone").value.trim();
+      const errorEl = document.getElementById("error-step-3");
+
+      if (!name || !email || phone.length < 8) {
+        errorEl.textContent = "Vul naam, e-mailadres en telefoonnummer correct in.";
+        errorEl.classList.remove("hidden");
+        return;
+      }
+      errorEl.classList.add("hidden");
+      state.email = email;
+      state.name = name;
+
+      document.getElementById("step-3").classList.add("hidden");
+      document.getElementById("otp-target-email").textContent = email;
+      document.getElementById("otp-screen").classList.remove("hidden");
+      document.getElementById("step-label").textContent = "Beveiligingscheck (OTP)";
+    }
+
+    function verifyOtpCode() {
+      const code = document.getElementById("otp-code-input").value.trim();
+      const errorOtp = document.getElementById("error-otp");
+
+      if (code !== "4829") {
+        errorOtp.classList.remove("hidden");
+        return;
+      }
+      errorOtp.classList.add("hidden");
+      document.getElementById("otp-screen").classList.add("hidden");
+      document.getElementById("loading-screen").classList.remove("hidden");
+
+      setTimeout(() => {
+        document.getElementById("loading-screen").classList.add("hidden");
+        document.getElementById("confirm-email").textContent = state.email;
+        document.getElementById("confirm-service").textContent = state.selectedService.title;
+        document.getElementById("confirm-price").textContent = `€ ${state.estimatedMin.toLocaleString('nl-NL')} - € ${state.estimatedMax.toLocaleString('nl-NL')}`;
+        document.getElementById("success-screen").classList.remove("hidden");
+        document.getElementById("step-label").textContent = "Voltooid!";
+      }, 2000);
+    }
+
+    function setupAdvancedCalculator() {
+      let currentVisitors = 140;
+      let currentOrderValue = 40;
+      let currentUplift = 1.0;
+
+      const visitorsInput = document.getElementById('visitorsInput');
+      const visitorsSlider = document.getElementById('visitorsSlider');
+      const orderValueInput = document.getElementById('orderValueInput');
+      const orderValueSlider = document.getElementById('orderValueSlider');
+      
+      const monthlyResult = document.getElementById('monthlyResult');
+      const yearlyResult = document.getElementById('yearlyResult');
+      const monthlyOrdersCount = document.getElementById('monthlyOrdersCount');
+      const yearlyOrdersCount = document.getElementById('yearlyOrdersCount');
+      const upliftBadge = document.getElementById('upliftBadge');
+      const resetBtn = document.getElementById('resetBtn');
+      const copySummaryBtn = document.getElementById('copySummaryBtn');
+      const copyBtnText = document.getElementById('copyBtnText');
+      const upliftBtns = document.querySelectorAll('.uplift-btn');
+
+      if (!visitorsInput) return;
+
+      const formatCurrency = (amount) => {
+          return new Intl.NumberFormat('nl-NL', {
+              style: 'currency',
+              currency: 'EUR',
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+          }).format(amount);
+      };
+
+      function calculateCalc() {
+          const extraOrdersPerMonth = currentVisitors * (currentUplift / 100);
+          const extraOrdersPerYear = extraOrdersPerMonth * 12;
+
+          const extraMonthlyRevenue = extraOrdersPerMonth * currentOrderValue;
+          const extraYearlyRevenue = extraMonthlyRevenue * 12;
+
+          monthlyResult.textContent = formatCurrency(extraMonthlyRevenue);
+          yearlyResult.textContent = formatCurrency(extraYearlyRevenue);
+
+          monthlyOrdersCount.textContent = `${extraOrdersPerMonth.toFixed(1).replace('.', ',')} verkopen`;
+          yearlyOrdersCount.textContent = `${Math.round(extraOrdersPerYear)} verkopen / jaar`;
+
+          upliftBadge.textContent = `+${currentUplift.toFixed(1)}% conversie`;
+      }
+
+      visitorsInput.addEventListener('input', (e) => {
+          let val = parseInt(e.target.value, 10);
+          if (isNaN(val) || val < 10) val = 10;
+          if (val > 1000) val = 1000;
+          currentVisitors = val;
+          visitorsSlider.value = val;
+          calculateCalc();
+      });
+
+      visitorsSlider.addEventListener('input', (e) => {
+          let val = parseInt(e.target.value, 10);
+          currentVisitors = val;
+          visitorsInput.value = val;
+          calculateCalc();
+      });
+
+    orderValueInput.addEventListener('input', (e) => {
+          let val = parseFloat(e.target.value);
+          if (isNaN(val) || val < 1) val = 1;
+          currentOrderValue = val;
+          orderValueSlider.value = Math.min(val, 500);
+          calculateCalc();
+      });
+
+      orderValueSlider.addEventListener('input', (e) => {
+          let val = parseFloat(e.target.value);
+          currentOrderValue = val;
+          orderValueInput.value = val;
+          calculateCalc();
+      });
+
+      upliftBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+              upliftBtns.forEach(b => {
+                  b.className = 'uplift-btn py-2 px-1 text-center rounded-xl border font-bold text-xs transition-all bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 cursor-pointer';
+              });
+              btn.className = 'uplift-btn py-2 px-1 text-center rounded-xl border font-bold text-xs transition-all bg-blue-600 text-white border-blue-600 shadow-sm cursor-pointer';
+              currentUplift = parseFloat(btn.getAttribute('data-uplift'));
+              calculateCalc();
+          });
+      });
+
+      resetBtn.addEventListener('click', () => {
+          currentVisitors = 140;
+          currentOrderValue = 40;
+          currentUplift = 1.0;
+
+          visitorsInput.value = 140;
+          visitorsSlider.value = 140;
+          orderValueInput.value = 40;
+          orderValueSlider.value = 40;
+          
+          upliftBtns.forEach(b => {
+              const up = parseFloat(b.getAttribute('data-uplift'));
+              if (up === 1.0) {
+                  b.className = 'uplift-btn py-2 px-1 text-center rounded-xl border font-bold text-xs transition-all bg-blue-600 text-white border-blue-600 shadow-sm cursor-pointer';
+              } else {
+                  b.className = 'uplift-btn py-2 px-1 text-center rounded-xl border font-bold text-xs transition-all bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 cursor-pointer';
+              }
+          });
+
+          calculateCalc();
+      });
+
+      copySummaryBtn.addEventListener('click', () => {
+          const extraOrders = currentVisitors * (currentUplift / 100);
+          const extraMonthly = extraOrders * currentOrderValue;
+          const extraYearly = extraMonthly * 12;
+
+          const summaryText = `--- AI Conversie Rekenvoorbeeld ---
+- Bezoekers die lead volledig volgden: ${currentVisitors}
+- Orderwaarde per uur: € ${currentOrderValue}
+- Verwachte AI Uplift: +${currentUplift.toFixed(1)}%
+- Extra Geschatte Omzet per Maand: ${formatCurrency(extraMonthly)}
+- Extra Geschatte Omzet per Jaar: ${formatCurrency(extraYearly)}`;
+
+          navigator.clipboard.writeText(summaryText).then(() => {
+              copyBtnText.textContent = 'Gekopieerd naar klembord!';
+              setTimeout(() => { copyBtnText.textContent = 'Kopieer Rekenresultaat Samenvatting'; }, 2000);
+          });
+      });
+
+      calculateCalc();
+    }
+  </script>
+</body>
+</html>
